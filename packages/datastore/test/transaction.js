@@ -261,6 +261,21 @@ describe('Transaction', function() {
       assert.equal(saveCalled, 1);
     });
 
+    it('should save multiple incomplete keys', function() {
+      transaction.save({ key: key(['Product']), data: '' });
+      transaction.save({ key: key(['Product']), data: '' });
+
+      var savedEntityCount = 0;
+      DatastoreRequestOverride.save = function(entities) {
+        savedEntityCount = entities.length;
+      };
+
+      transaction.request_ = util.noop;
+
+      transaction.commit();
+      assert.equal(savedEntityCount, 2);
+    });
+
     it('should send the built request object', function(done) {
       transaction.requests_ = [
         {
