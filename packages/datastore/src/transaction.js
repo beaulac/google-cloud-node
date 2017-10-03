@@ -129,8 +129,14 @@ Transaction.prototype.commit = function(callback) {
     // key they just asked to be deleted, the delete request will be ignored,
     // giving preference to the save operation.
     .filter(function(modifiedEntity) {
-      var key = JSON.stringify(modifiedEntity.entity.key);
+      var entityKey = modifiedEntity.entity.key;
 
+      // Allow operation if this entity is new (has an incomplete key)
+      if (!entityKey.id && !entityKey.name) {
+        return true;
+      }
+
+      var key = JSON.stringify(entityKey);
       if (!keys[key]) {
         keys[key] = true;
         return true;
