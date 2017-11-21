@@ -460,15 +460,28 @@ function entityToEntityProto(entityObject) {
     var hasEntityPath = entityIndex > -1;
 
     if (!hasArrayPath && !hasEntityPath) {
+
       if (entity.properties) {
+        // This is an embedded entity; only exclude if path matches.
         if (entity.properties[path]) {
           // This is the property to exclude!
           entity.properties[path].excludeFromIndexes = true;
         }
-      } else if (!path) {
-        // This is a primitive that should be excluded.
-        entity.excludeFromIndexes = true;
+        return;
       }
+
+      if (!path) {
+        if (entity.arrayValue) {
+          entity.arrayValue.values.forEach(function(arrayValue) {
+            var memberEntity = arrayValue.entityValue || arrayValue;
+            excludePathFromEntity(memberEntity, path);
+          });
+        } else {
+          // This is a non-array and non-entity that should be excluded.
+          entity.excludeFromIndexes = true;
+        }
+      }
+
       return;
     }
 
