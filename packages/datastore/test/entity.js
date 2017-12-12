@@ -595,7 +595,8 @@ describe('entity', function() {
           'array[].array[].entity.name',
           'entityExcluded[].name',
           'primitiveExcluded[]',
-          'nestedPrimitiveExcluded[]'
+          'nestedPrimitiveExcluded[]',
+          'nestedEntityExcluded[].name'
         ],
 
         data: {
@@ -621,6 +622,10 @@ describe('entity', function() {
 
           nestedPrimitiveExcluded: [
             [value]
+          ],
+
+          nestedEntityExcluded: [
+            [{name: value}]
           ],
 
           array: [
@@ -715,6 +720,28 @@ describe('entity', function() {
                       {
                         stringValue: value,
                         excludeFromIndexes: true
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          nestedEntityExcluded: {
+            arrayValue: {
+              values: [
+                {
+                  arrayValue: {
+                    values: [
+                      {
+                        entityValue: {
+                          properties: {
+                            name: {
+                              stringValue: value,
+                              excludeFromIndexes: true
+                            }
+                          }
+                        }
                       }
                     ]
                   }
